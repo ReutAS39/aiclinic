@@ -1,9 +1,11 @@
 import uvicorn
 from fastapi import FastAPI
 from pydantic import BaseModel
+from app.api.router_page import router as api_router
 
 
 app = FastAPI()
+app.include_router(api_router)
 
 
 @app.get('/', summary='приветствие')
