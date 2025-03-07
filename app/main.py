@@ -1,10 +1,20 @@
+from contextlib import asynccontextmanager
+
 import uvicorn
+
 from fastapi import FastAPI
+
 from pydantic import BaseModel
 from app.api.router_page import router as api_router
 
 
-app = FastAPI()
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # async with engine.be
+    yield
+
+
+app = FastAPI(lifespan=lifespan)
 app.include_router(api_router)
 
 
