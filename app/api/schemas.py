@@ -7,3 +7,4 @@ class CreateSchedule(BaseModel):
     frequency: int
     duration: int
     recipient_id: int
+    # add_in: datetime
