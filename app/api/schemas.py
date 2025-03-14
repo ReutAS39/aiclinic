@@ -1,10 +1,29 @@
-from typing import Annotated
-from pydantic import BaseModel
+from datetime import datetime
+
+from pydantic import BaseModel, ConfigDict
 
 
-class CreateSchedule(BaseModel):
+class ScheduleBase(BaseModel):
     doctors_stuff: str
     frequency: int
     duration: int
     recipient_id: int
-    # add_in: datetime
+    add_in: datetime
+
+class CreateSchedule(ScheduleBase):
+    pass
+
+
+class Schedule(ScheduleBase):
+    model_config = ConfigDict(from_attributes=True)
+    id: int
+
+class UserBase(BaseModel):
+    name: str
+
+class User(UserBase):
+    model_config = ConfigDict(from_attributes=True)
+    id: int
+
+class CreateUser(UserBase):
+    pass
