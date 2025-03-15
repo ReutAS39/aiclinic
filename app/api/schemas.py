@@ -7,7 +7,7 @@ class ScheduleBase(BaseModel):
     doctors_stuff: str
     frequency: int
     duration: int
-    recipient_id: int
+    user_id: int
     add_in: datetime
 
 class CreateSchedule(ScheduleBase):
@@ -17,6 +17,11 @@ class CreateSchedule(ScheduleBase):
 class Schedule(ScheduleBase):
     model_config = ConfigDict(from_attributes=True)
     id: int
+
+class Schedulezzz(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+    id: int
+    doctors_stuff: str
 
 class UserBase(BaseModel):
     name: str
