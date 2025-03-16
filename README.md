@@ -1,5 +1,3 @@
-**currency-bot** — это учебный проект, представляющий собой пример Telegram-бота для для конвертации валют.
-
 ## Описание
 
 Тестовое задание
@@ -51,13 +49,13 @@ GET /next_takings?user_id=
 1. Клонируйте репозиторий:
 
    ```bash
-   git clone https://github.com/ReutAS39/currency-bot.git
+   git clone https://github.com/ReutAS39/aiclinic.git
    ```
 
 2. Перейдите в директорию проекта:
 
    ```bash
-   cd currency-bot
+   cd aiclinic
    ```
 
 3. Создайте и активируйте виртуальное окружение:
@@ -67,23 +65,15 @@ GET /next_takings?user_id=
    source venv/bin/activate  # Для Windows: venv\Scripts\activate
    ```
 
-4. Получите токен бота через [@BotFather](https://t.me/BotFather).
-
-
-5. Установите зависимости:
+4. Установите зависимости:
 
    ```bash
    pip install -r requirements.txt
    ```
 
-6. Создайте файл `.env` в корне проекта:
 
-   ```
-   BOT_TOKEN=ВАШ_ТОКЕН
-   ```
-
-7. Запустите бота c корня проекта:
+5. Запустите бота c корня проекта:
 
    ```bash
-   python -m bot.main
+   python -m main
    ```
