@@ -25,7 +25,6 @@ async def get_schedules_id_by_user_id(
 ) -> list[Schedulezzz]:
     schedules = await crud.get_schedules_id_by_user_id(session=session, **request_body.to_dict())
     if schedules is not None:
-
         return schedules
     raise HTTPException(
         status_code=status.HTTP_404_NOT_FOUND,

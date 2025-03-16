@@ -34,8 +34,8 @@ async def get_schedules_id_by_user_id(session: AsyncSession, **filter_by) -> lis
 
 
 async def get_schedule_for_user(session: AsyncSession, **filter_by) -> list[Schedule]:
-    stmt = select(Schedule).filter_by(**filter_by)
-    result: Result = await session.execute(stmt)
+    query = select(Schedule).filter_by(**filter_by)
+    result: Result = await session.execute(query)
     schedules = result.scalars().all()
     return list(schedules)
 
