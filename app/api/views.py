@@ -37,6 +37,8 @@ async def get_schedule_for_user(
         session: AsyncSession = Depends(db_helper.scoped_session_dependency),
 ) -> list[Schedule]:
     schedule = await crud.get_schedule_for_user(session=session, **request_body.to_dict())
+    print(f'{schedule[0].frequency} - schedule')
+    print(schedule)
     return schedule
 
 
