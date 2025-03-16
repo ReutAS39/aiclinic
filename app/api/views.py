@@ -40,7 +40,7 @@ async def get_schedule_for_user(
     return schedule
 
 
-@router.get('next_takings', summary='Возвращает данные о таблетках, которые необходимо принять в ближайшие период')
+@router.get('/next_takings', summary='Возвращает данные о таблетках, которые необходимо принять в ближайшие период')
 async def get_next_takings(
         request_body: RBSchedules = Depends(),
         session: AsyncSession = Depends(db_helper.scoped_session_dependency),

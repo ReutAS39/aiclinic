@@ -5,6 +5,7 @@ import uvicorn
 
 from app.core.base import Base
 from app.api.views import router as api_router
+from app.core.config import settings
 
 from app.core.db_helper import db_helper
 
@@ -18,7 +19,7 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(lifespan=lifespan)
-app.include_router(api_router)
+app.include_router(api_router, prefix=settings.api_prefix)
 
 
 if __name__ == '__main__':
