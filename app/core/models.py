@@ -5,17 +5,17 @@ from sqlalchemy.orm import Mapped, mapped_column
 from app.core.base import Base
 
 
-class User(Base):
+class UserOrm(Base):
 
     name: Mapped[str]
 
 
-class Schedule(Base):
+class ScheduleOrm(Base):
 
     doctors_stuff: Mapped[str] = mapped_column(String, nullable=False)
     frequency: Mapped[str] = mapped_column(Integer, nullable=False)
     duration : Mapped[int] = mapped_column(Integer, nullable=False)
-    user_id: Mapped[int] = mapped_column(Integer, ForeignKey("users.id"))
+    user_id: Mapped[int] = mapped_column(Integer, ForeignKey("userorms.id"))
     add_in: Mapped[datetime] = mapped_column(server_default=func.now())
 
 
