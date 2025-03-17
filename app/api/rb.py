@@ -22,10 +22,5 @@ class RBSchedule:
 
     def to_dict(self) -> dict:
         data = {'id': self.id, 'user_id': self.user_id,}
-        # print(data)
-        # Создаем копию словаря, чтобы избежать изменения словаря во время итерации
         filtered_data = {key: value for key, value in data.items() if value is not None}
-        # print(filtered_data)
-        print("!!!!")
-        print(filtered_data)
         return filtered_data

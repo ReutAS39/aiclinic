@@ -14,7 +14,7 @@ from datetime import timedelta, time
 #     return working_hours[:-1]
 
 
-def f(frequency, day_duration=14, start_hour=8):
+def freq(frequency, day_duration=14, start_hour=8):
     chunk = day_duration / (frequency-1)
     # print(chunk)
     star_hour = 3

@@ -6,23 +6,23 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.api.rb import RBSchedule, RBSchedules
 from app.core import db_helper
 from app.api import crud
-from app.api.schemas import User, CreateUser, CreateSchedule, Schedule, Schedulezzz
+from app.api.schemas import UserSchema, CreateUserSchema, CreateScheduleSchema, ScheduleSchema, SchedulezzzSchema
 
 router = APIRouter()
 
 
 @router.post('/schedule/', summary='Создание расписания')
 async def create_schedule(
-        schedule_in: CreateSchedule,
+        schedule_in: CreateScheduleSchema,
         session: AsyncSession = Depends(db_helper.scoped_session_dependency),
-) -> Schedulezzz:
+) -> SchedulezzzSchema:
     return await crud.create_schedule(session=session, schedule_in=schedule_in)
 
 @router.get('/schedules/user_id={user_id}', summary='Cписок идентификаторов существующих расписаний для указанного пользователя')
 async def get_schedules_id_by_user_id(
         request_body: RBSchedules = Depends(),
         session: AsyncSession = Depends(db_helper.scoped_session_dependency),
-) -> list[Schedulezzz]:
+) -> list[SchedulezzzSchema]:
     schedules = await crud.get_schedules_id_by_user_id(session=session, **request_body.to_dict())
     if schedules is not None:
         return schedules
@@ -35,10 +35,8 @@ async def get_schedules_id_by_user_id(
 async def get_schedule_for_user(
         request_body: RBSchedule = Depends(),
         session: AsyncSession = Depends(db_helper.scoped_session_dependency),
-) -> list[Schedule]:
+) -> list[ScheduleSchema]:
     schedule = await crud.get_schedule_for_user(session=session, **request_body.to_dict())
-    print(f'{schedule[0].frequency} - schedule')
-    print(schedule)
     return schedule
 
 
@@ -46,7 +44,7 @@ async def get_schedule_for_user(
 async def get_next_takings(
         request_body: RBSchedules = Depends(),
         session: AsyncSession = Depends(db_helper.scoped_session_dependency),
-) -> list[Schedulezzz]:
+) -> list[SchedulezzzSchema]:
     schedules = await crud.get_schedules_id_by_user_id(session=session, **request_body.to_dict())
     if schedules is not None:
 
