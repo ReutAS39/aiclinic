@@ -3,7 +3,6 @@ from fastapi import APIRouter, HTTPException, status, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
 
-from app.api.rb import RBSchedules
 from app.core import db_helper
 from app.api import crud
 from app.api.schemas import UserSchema, CreateUserSchema, CreateScheduleSchema, ScheduleSchema, SchedulezzzSchema
@@ -32,6 +31,7 @@ async def get_schedules_id_by_user_id(
         detail=f'schedule for user  not found!'
     )
 
+
 @router.get('/schedule/user_id={user_id}&schedule_id={schedule_id}', summary='Данные о выбранном расписании с рассчитанным графиком приёмов на день')
 async def get_schedule_for_user(
         user_id: int,
@@ -41,12 +41,13 @@ async def get_schedule_for_user(
     schedule = await crud.get_schedule_for_user(session=session, user_id=user_id, schedule_id=schedule_id)
     return schedule
 
+
 @router.get('/next_takings', summary='Возвращает данные о таблетках, которые необходимо принять в ближайшие период')
 async def get_next_takings(
-        request_body: RBSchedules = Depends(),
+        user_id: int,
         session: AsyncSession = Depends(db_helper.scoped_session_dependency),
 ) -> list[SchedulezzzSchema]:
-    schedules = await crud.get_schedules_id_by_user_id(session=session, **request_body.to_dict())
+    schedules = await crud.get_schedules_id_by_user_id(session=session, )
     if schedules is not None:
 
         return schedules
@@ -55,9 +56,6 @@ async def get_next_takings(
         detail=f'schedule for user  not found!'
 )
 
-
-
-
 # @router.post('/user/', response_model=User)
 # async def create_user(
 #         user_in: CreateUser,
@@ -65,5 +63,4 @@ async def get_next_takings(
 # ):
 #     return await crud.create_user(session=session, user_in=user_in)
 #
-
 

@@ -9,7 +9,7 @@ class Settings(BaseSettings):
     api_prefix: str = '/api'
 
     db_url: str = f'sqlite+aiosqlite:///{BASE_DIR}/db.sqlite3'
-    db_echo: bool = True
+    db_echo: bool = False
 
 
 settings = Settings()

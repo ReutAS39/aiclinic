@@ -1,5 +1,4 @@
-
-
+from app.core.utils import freq
 from sqlalchemy import select
 from sqlalchemy.engine import Result
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -15,20 +14,20 @@ async def create_schedule(session: AsyncSession, schedule_in: CreateScheduleSche
 
 
 async def get_schedules_id_by_user_id(session: AsyncSession, user_id: int) -> list[ScheduleOrm]:
-    query = select(ScheduleOrm).where(user_id==user_id)
-    result1: Result = await session.execute(query)
-    schedules1 = result1.scalars().all()
+    query = select(ScheduleOrm).where(ScheduleOrm.user_id == user_id)
+    result: Result = await session.execute(query)
+    schedules1 = result.scalars().all()
     return list(schedules1)
 
-async def get_schedule_for_user(session: AsyncSession, user_id: int, schedule_id:int, ) -> ScheduleOrm:
-    query = select(ScheduleOrm).where(ScheduleOrm.id==schedule_id, ScheduleOrm.user_id==user_id)
+
+async def get_schedule_for_user(session: AsyncSession, user_id: int, schedule_id: int, ) -> ScheduleOrm:
+    query = select(ScheduleOrm).where(ScheduleOrm.id == schedule_id, ScheduleOrm.user_id == user_id)
     result: Result = await session.execute(query)
     schedule = result.scalar_one_or_none()
+    raspisanie = freq(schedule.frequency)
+    print('!!!!!!')
+    print(raspisanie)
     return schedule
-
-
-
-
 
 
 # async def create_user(session: AsyncSession, user_in: CreateUser) -> User | None:

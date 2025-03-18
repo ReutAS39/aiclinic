@@ -17,21 +17,19 @@ from datetime import timedelta, time
 def freq(frequency, day_duration=14, start_hour=8):
     chunk = day_duration / (frequency-1)
     # print(chunk)
-    star_hour = 3
-    print(datetime.datetime.strptime(f"{star_hour}:00", "%H:%M"))
-    print(datetime.datetime.strptime(f"{star_hour}:00", "%H:%M"))
+    # star_hour = 3
+    # print(datetime.datetime.strptime(f"{start_hour}:00", "%H:%M"))
+    # print(datetime.datetime.strptime(f"{start_hour}:00", "%H:%M"))
     current_time = datetime.datetime.strptime(f"{start_hour}:00", "%H:%M")
 
 
-    print([{i, (current_time+datetime.timedelta(hours=t*chunk)).strftime('%H:%M')} for i, t in enumerate(range(frequency), start=1)])
-    print([{i, (current_time+datetime.timedelta(hours=t*chunk))} for i, t in enumerate(range(frequency), start=1)])
+    # print([{i, (current_time+datetime.timedelta(hours=t*chunk)).strftime('%H:%M')} for i, t in enumerate(range(frequency), start=1)])
+    # print([{i, (current_time+datetime.timedelta(hours=t*chunk))} for i, t in enumerate(range(frequency), start=1)])
 
 
 
 
-    return [{i: t*chunk + start_hour} for i, t in enumerate(range(frequency), start=1)]
+    return [{i, (current_time+datetime.timedelta(hours=t*chunk)).strftime('%H:%M')} for i, t in enumerate(range(frequency), start=1)]
     # return [{i: t*chunk + start_hour} for i, t in enumerate(range(frequency), start=1)]
 
 
-
-print(f(6))
