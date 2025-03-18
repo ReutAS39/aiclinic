@@ -3,7 +3,7 @@ from fastapi import APIRouter, HTTPException, status, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
 
-from app.api.rb import RBSchedule, RBSchedules
+from app.api.rb import RBSchedules
 from app.core import db_helper
 from app.api import crud
 from app.api.schemas import UserSchema, CreateUserSchema, CreateScheduleSchema, ScheduleSchema, SchedulezzzSchema
@@ -18,12 +18,13 @@ async def create_schedule(
 ) -> SchedulezzzSchema:
     return await crud.create_schedule(session=session, schedule_in=schedule_in)
 
+
 @router.get('/schedules/user_id={user_id}', summary='Cписок идентификаторов существующих расписаний для указанного пользователя')
 async def get_schedules_id_by_user_id(
-        request_body: RBSchedules = Depends(),
+        user_id: int,
         session: AsyncSession = Depends(db_helper.scoped_session_dependency),
 ) -> list[SchedulezzzSchema]:
-    schedules = await crud.get_schedules_id_by_user_id(session=session, **request_body.to_dict())
+    schedules = await crud.get_schedules_id_by_user_id(session=session, user_id=user_id)
     if schedules is not None:
         return schedules
     raise HTTPException(
@@ -33,12 +34,12 @@ async def get_schedules_id_by_user_id(
 
 @router.get('/schedule/user_id={user_id}&schedule_id={schedule_id}', summary='Данные о выбранном расписании с рассчитанным графиком приёмов на день')
 async def get_schedule_for_user(
-        request_body: RBSchedule = Depends(),
+        user_id: int,
+        schedule_id: int,
         session: AsyncSession = Depends(db_helper.scoped_session_dependency),
-) -> list[ScheduleSchema]:
-    schedule = await crud.get_schedule_for_user(session=session, **request_body.to_dict())
+) -> ScheduleSchema:
+    schedule = await crud.get_schedule_for_user(session=session, user_id=user_id, schedule_id=schedule_id)
     return schedule
-
 
 @router.get('/next_takings', summary='Возвращает данные о таблетках, которые необходимо принять в ближайшие период')
 async def get_next_takings(
