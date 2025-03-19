@@ -22,7 +22,7 @@ async def create_schedule(
 async def get_schedules_id_by_user_id(
         user_id: int,
         session: AsyncSession = Depends(db_helper.scoped_session_dependency),
-) -> list[SchedulezzzSchema]:
+) -> list[int]:
     schedules = await crud.get_schedules_id_by_user_id(session=session, user_id=user_id)
     if schedules is not None:
         return schedules
@@ -46,7 +46,7 @@ async def get_schedule_for_user(
 async def get_next_takings(
         user_id: int,
         session: AsyncSession = Depends(db_helper.scoped_session_dependency),
-) -> list[SchedulezzzSchema]:
+) -> list[int]:
     schedules = await crud.get_schedules_id_by_user_id(session=session, )
     if schedules is not None:
 

@@ -13,11 +13,14 @@ async def create_schedule(session: AsyncSession, schedule_in: CreateScheduleSche
     return schedule
 
 
-async def get_schedules_id_by_user_id(session: AsyncSession, user_id: int) -> list[ScheduleOrm]:
-    query = select(ScheduleOrm).where(ScheduleOrm.user_id == user_id)
+async def get_schedules_id_by_user_id(session: AsyncSession, user_id: int) -> list[int]:
+    schedules_id = []
+    query = select(ScheduleOrm).filter_by(user_id=user_id)
     result: Result = await session.execute(query)
-    schedules1 = result.scalars().all()
-    return list(schedules1)
+    schedules = result.scalars().all()
+    for schedule in schedules:
+        schedules_id.append(schedule.id)
+    return schedules_id
 
 
 async def get_schedule_for_user(session: AsyncSession, user_id: int, schedule_id: int, ) -> ScheduleOrm:
