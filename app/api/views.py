@@ -4,7 +4,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 
 from app.core import db_helper
-from app.api import crud
+from app.api import service
 from app.api.schemas import CreateScheduleSchema, ScheduleSchema
 # from app.api.schemas import UserSchema, CreateUserSchema
 
@@ -16,7 +16,10 @@ async def create_schedule(
         schedule_in: CreateScheduleSchema,
         session: AsyncSession = Depends(db_helper.scoped_session_dependency),
 ) -> int:
-    return await crud.create_schedule(session=session, schedule_in=schedule_in)
+    try:
+        return await service.create_schedule(session=session, schedule_in=schedule_in)
+    except FormCreationError:
+        raise ValidationError
 
 
 @router.get('/schedules/user_id={user_id}', summary='Retrieves a list of schedules for the specified user')
@@ -24,7 +27,7 @@ async def get_schedules_id_by_user_id(
         user_id: int,
         session: AsyncSession = Depends(db_helper.scoped_session_dependency),
 ) -> list[int]:
-    schedules = await crud.get_schedules_id_by_user_id(session=session, user_id=user_id)
+    schedules = await service.get_schedules_id_by_user_id(session=session, user_id=user_id)
     if schedules is not None:
         return schedules
     raise HTTPException(
@@ -39,7 +42,7 @@ async def get_schedule_for_user(
         schedule_id: int,
         session: AsyncSession = Depends(db_helper.scoped_session_dependency),
 ) -> ScheduleSchema:
-    schedule = await crud.get_schedule_for_user(session=session, user_id=user_id, schedule_id=schedule_id)
+    schedule = await service.get_schedule_for_user(session=session, user_id=user_id, schedule_id=schedule_id)
     return schedule
 
 
@@ -48,7 +51,7 @@ async def get_next_takings(
         user_id: int,
         session: AsyncSession = Depends(db_helper.scoped_session_dependency),
 ) -> list[int]:
-    schedules = await crud.get_schedules_id_by_user_id(session=session, user_id=user_id)
+    schedules = await service.get_schedules_id_by_user_id(session=session, user_id=user_id)
     if schedules is not None:
 
         return schedules

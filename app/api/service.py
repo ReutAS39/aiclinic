@@ -1,5 +1,6 @@
 from sqlalchemy import select
 from sqlalchemy.engine import Result
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.models import UserOrm, ScheduleOrm
@@ -10,7 +11,10 @@ from app.api.schemas import CreateUserSchema, CreateScheduleSchema
 async def create_schedule(session: AsyncSession, schedule_in: CreateScheduleSchema) -> int:
     schedule = ScheduleOrm(**schedule_in.model_dump())
     session.add(schedule)
-    await session.commit()
+    try:
+         await session.commit()
+    except IntegrityError as ex:
+        raise FormCreationError
     return schedule.id
 
 
