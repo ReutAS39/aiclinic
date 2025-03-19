@@ -5,7 +5,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core import db_helper
 from app.api import crud
-from app.api.schemas import UserSchema, CreateUserSchema, CreateScheduleSchema, ScheduleSchema
+from app.api.schemas import CreateScheduleSchema, ScheduleSchema
+# from app.api.schemas import UserSchema, CreateUserSchema
 
 router = APIRouter()
 
@@ -18,7 +19,7 @@ async def create_schedule(
     return await crud.create_schedule(session=session, schedule_in=schedule_in)
 
 
-@router.get('/schedules/user_id={user_id}', summary='Cписок идентификаторов существующих расписаний для указанного пользователя')
+@router.get('/schedules/user_id={user_id}', summary='Retrieves a list of schedules for the specified user')
 async def get_schedules_id_by_user_id(
         user_id: int,
         session: AsyncSession = Depends(db_helper.scoped_session_dependency),
@@ -47,7 +48,7 @@ async def get_next_takings(
         user_id: int,
         session: AsyncSession = Depends(db_helper.scoped_session_dependency),
 ) -> list[int]:
-    schedules = await crud.get_schedules_id_by_user_id(session=session, )
+    schedules = await crud.get_schedules_id_by_user_id(session=session, user_id=user_id)
     if schedules is not None:
 
         return schedules
