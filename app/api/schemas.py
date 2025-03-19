@@ -10,6 +10,7 @@ class ScheduleBase(BaseModel):
     user_id: int
     add_in: datetime
 
+
 class CreateScheduleSchema(ScheduleBase):
     pass
 
@@ -19,17 +20,14 @@ class ScheduleSchema(ScheduleBase):
     id: int
 
 
-class SchedulezzzSchema(BaseModel):
-    model_config = ConfigDict(from_attributes=True)
-    id: int
-    doctors_stuff: str
-
 class UserBase(BaseModel):
     name: str
+
 
 class UserSchema(UserBase):
     model_config = ConfigDict(from_attributes=True)
     id: int
+
 
 class CreateUserSchema(UserBase):
     pass

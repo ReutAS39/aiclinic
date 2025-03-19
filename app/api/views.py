@@ -5,7 +5,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core import db_helper
 from app.api import crud
-from app.api.schemas import UserSchema, CreateUserSchema, CreateScheduleSchema, ScheduleSchema, SchedulezzzSchema
+from app.api.schemas import UserSchema, CreateUserSchema, CreateScheduleSchema, ScheduleSchema
 
 router = APIRouter()
 
@@ -14,7 +14,7 @@ router = APIRouter()
 async def create_schedule(
         schedule_in: CreateScheduleSchema,
         session: AsyncSession = Depends(db_helper.scoped_session_dependency),
-) -> SchedulezzzSchema:
+) -> int:
     return await crud.create_schedule(session=session, schedule_in=schedule_in)
 
 
