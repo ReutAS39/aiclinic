@@ -2,10 +2,10 @@ __all__ = (
     "Base",
     "DatabaseHelper",
     "db_helper",
-    "UserOrm",
-    "ScheduleOrm",
+    "UserModel",
+    "ScheduleModel",
 )
 
-from .base import Base
+from .models import Base
 from .db_helper import DatabaseHelper, db_helper
-from .models import UserOrm, ScheduleOrm
+from .models import UserModel, ScheduleModel

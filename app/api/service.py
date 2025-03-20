@@ -3,13 +3,13 @@ from sqlalchemy.engine import Result
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.core.models import UserOrm, ScheduleOrm
+from app.core.models import UserModel, ScheduleModel
 from app.core.utils import freq
 from app.api.schemas import CreateUserSchema, CreateScheduleSchema
 
 
 async def create_schedule(session: AsyncSession, schedule_in: CreateScheduleSchema) -> int:
-    schedule = ScheduleOrm(**schedule_in.model_dump())
+    schedule = ScheduleModel(**schedule_in.model_dump())
     session.add(schedule)
     try:
          await session.commit()
@@ -20,7 +20,7 @@ async def create_schedule(session: AsyncSession, schedule_in: CreateScheduleSche
 
 async def get_schedules_id_by_user_id(session: AsyncSession, user_id: int) -> list[int]:
     schedules_ids = []
-    query = select(ScheduleOrm).filter_by(user_id=user_id)
+    query = select(ScheduleModel).filter_by(user_id=user_id)
     result: Result = await session.execute(query)
     schedules = result.scalars().all()
     for schedule in schedules:
@@ -28,8 +28,8 @@ async def get_schedules_id_by_user_id(session: AsyncSession, user_id: int) -> li
     return schedules_ids
 
 
-async def get_schedule_for_user(session: AsyncSession, user_id: int, schedule_id: int, ) -> ScheduleOrm:
-    query = select(ScheduleOrm).where(ScheduleOrm.id == schedule_id, ScheduleOrm.user_id == user_id)
+async def get_schedule_for_user(session: AsyncSession, user_id: int, schedule_id: int, ) -> ScheduleModel:
+    query = select(ScheduleModel).where(ScheduleModel.id == schedule_id, ScheduleModel.user_id == user_id)
     result: Result = await session.execute(query)
     schedule = result.scalar_one_or_none()
     raspisanie = freq(schedule.frequency)
