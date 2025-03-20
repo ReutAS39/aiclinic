@@ -39,14 +39,21 @@ async def get_schedule_for_user(session: AsyncSession, user_id: int, schedule_id
     day_schedule = freq(schedule.frequency)
     json_compatible_schedule_data = jsonable_encoder(schedule)
     json_compatible_schedule_data['day_schedule'] = day_schedule
-    print(json_compatible_schedule_data)
+
 
     return json_compatible_schedule_data
 
 
-# async def get_next_taking(session: AsyncSession, user_id: int):
-#
-#     pass
+async def get_next_taking(session: AsyncSession, user_id: int) -> dict:
+    test = {}
+    query = select(ScheduleModel).filter_by(user_id=user_id)
+    result: Result = await session.execute(query)
+    schedules = result.scalars().all()
+    for schedule in schedules:
+        test[f'{schedule.doctors_stuff}'] = freq(schedule.frequency)
+
+
+    return test
 
 
 

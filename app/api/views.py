@@ -58,8 +58,8 @@ async def get_schedule_for_user(
 async def get_next_takings(
         user_id: int,
         session: AsyncSession = Depends(db_helper.scoped_session_dependency),
-):
-    schedules = await service.get_schedules_id_by_user_id(session=session, user_id=user_id)
+) -> dict:
+    schedules = await service.get_next_taking(session=session, user_id=user_id)
     if schedules is not None:
 
         return schedules
@@ -67,6 +67,8 @@ async def get_next_takings(
         status_code=status.HTTP_404_NOT_FOUND,
         detail=f'schedule for user  not found!'
 )
+
+
 
 # @router.post('/user/', response_model=User)
 # async def create_user(
