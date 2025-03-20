@@ -20,14 +20,17 @@ class ScheduleSchema(ScheduleBase):
     id: int
 
 
-class UserBase(BaseModel):
-    name: str
+class DayScheduleSchema(ScheduleBase):
+    day_schedule: dict
 
-
-class UserSchema(UserBase):
-    model_config = ConfigDict(from_attributes=True)
-    id: int
-
-
-class CreateUserSchema(UserBase):
-    pass
+# class UserBase(BaseModel):
+#     name: str
+#
+#
+# class UserSchema(UserBase):
+#     model_config = ConfigDict(from_attributes=True)
+#     id: int
+#
+#
+# class CreateUserSchema(UserBase):
+#     pass

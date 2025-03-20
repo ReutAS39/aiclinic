@@ -29,7 +29,7 @@ def freq(frequency, day_duration=14, start_hour=8):
 
 
 
-    return [{i, (current_time+datetime.timedelta(hours=t*chunk)).strftime('%H:%M')} for i, t in enumerate(range(frequency), start=1)]
+    return {i: (current_time+datetime.timedelta(hours=t*chunk)).strftime('%H:%M') for i, t in enumerate(range(frequency), start=1)}
     # return [{i: t*chunk + start_hour} for i, t in enumerate(range(frequency), start=1)]
 
 

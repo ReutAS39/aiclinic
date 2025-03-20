@@ -1,20 +1,24 @@
+from fastapi.encoders import jsonable_encoder
 from sqlalchemy import select
 from sqlalchemy.engine import Result
-from sqlalchemy.exc import IntegrityError
+from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.core.models import UserModel, ScheduleModel
+from app.core.models import ScheduleModel
 from app.core.utils import freq
-from app.api.schemas import CreateUserSchema, CreateScheduleSchema
+from app.api.schemas import CreateScheduleSchema
+
+# from app.core.models import UserModel
+# from app.api.schemas import CreateUserSchema
 
 
 async def create_schedule(session: AsyncSession, schedule_in: CreateScheduleSchema) -> int:
     schedule = ScheduleModel(**schedule_in.model_dump())
     session.add(schedule)
     try:
-         await session.commit()
-    except IntegrityError as ex:
-        raise FormCreationError
+        await session.commit()
+    except SQLAlchemyError as e:
+        raise e
     return schedule.id
 
 
@@ -28,14 +32,26 @@ async def get_schedules_id_by_user_id(session: AsyncSession, user_id: int) -> li
     return schedules_ids
 
 
-async def get_schedule_for_user(session: AsyncSession, user_id: int, schedule_id: int, ) -> ScheduleModel:
+async def get_schedule_for_user(session: AsyncSession, user_id: int, schedule_id: int, ) -> dict:
     query = select(ScheduleModel).where(ScheduleModel.id == schedule_id, ScheduleModel.user_id == user_id)
     result: Result = await session.execute(query)
     schedule = result.scalar_one_or_none()
-    raspisanie = freq(schedule.frequency)
-    print('!!!!!!')
-    print(raspisanie)
-    return schedule
+    day_schedule = freq(schedule.frequency)
+    json_compatible_schedule_data = jsonable_encoder(schedule)
+    json_compatible_schedule_data['day_schedule'] = day_schedule
+    print(json_compatible_schedule_data)
+
+    return json_compatible_schedule_data
+
+
+# async def get_next_taking(session: AsyncSession, user_id: int):
+#
+#     pass
+
+
+
+
+
 
 
 # async def create_user(session: AsyncSession, user_in: CreateUser) -> User | None:
