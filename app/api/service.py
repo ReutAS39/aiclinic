@@ -1,11 +1,11 @@
 from fastapi.encoders import jsonable_encoder
 from sqlalchemy import select
 from sqlalchemy.engine import Result
-from sqlalchemy.exc import IntegrityError, SQLAlchemyError
+from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.core.models import ScheduleModel
-from app.core.utils import freq
+from app.models import ScheduleModel
+from app.utils import freq
 from app.api.schemas import CreateScheduleSchema
 
 # from app.core.models import UserModel

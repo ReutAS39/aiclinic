@@ -1,5 +1,7 @@
 from asyncio import current_task
+from typing import Annotated
 
+from fastapi import Depends
 from sqlalchemy.ext.asyncio import (
     create_async_engine,
     async_sessionmaker,
@@ -46,3 +48,5 @@ db_helper = DatabaseHelper(
     url=settings.db_url,
     echo=settings.db_echo,
 )
+
+SessionDep = Annotated[AsyncSession, Depends(db_helper.scoped_session_dependency)]

@@ -4,9 +4,9 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 
-from app.core import db_helper
+from app.db_helper import db_helper, SessionDep
 from app.api import service
-from app.api.schemas import CreateScheduleSchema, ScheduleSchema, DayScheduleSchema
+from app.api.schemas import CreateScheduleSchema, DayScheduleSchema
 
 # from app.api.schemas import UserSchema, CreateUserSchema
 
@@ -16,7 +16,7 @@ router = APIRouter(tags=['Schedules'])
 @router.post('/schedule/', summary='Создание расписания')
 async def create_schedule(
         schedule_in: CreateScheduleSchema,
-        session: AsyncSession = Depends(db_helper.scoped_session_dependency),
+        session: SessionDep,
 ) -> int:
     try:
         return await service.create_schedule(session=session, schedule_in=schedule_in)
@@ -29,7 +29,7 @@ async def create_schedule(
     summary='Retrieves a list of schedules for the specified user')
 async def get_schedules_id_by_user_id(
         user_id: int,
-        session: AsyncSession = Depends(db_helper.scoped_session_dependency),
+        session: SessionDep,
 ) -> list[int]:
     schedules = await service.get_schedules_id_by_user_id(session=session, user_id=user_id)
     if len(schedules):
@@ -46,7 +46,8 @@ async def get_schedules_id_by_user_id(
 async def get_schedule_for_user(
         user_id: int,
         schedule_id: int,
-        session: AsyncSession = Depends(db_helper.scoped_session_dependency),
+        session: SessionDep,
+        # session: AsyncSession = Depends(db_helper.scoped_session_dependency),
 ) -> DayScheduleSchema:
     schedule = await service.get_schedule_for_user(session=session, user_id=user_id, schedule_id=schedule_id)
     return schedule
@@ -57,7 +58,7 @@ async def get_schedule_for_user(
     summary='Возвращает данные о таблетках, которые необходимо принять в ближайшие период')
 async def get_next_takings(
         user_id: int,
-        session: AsyncSession = Depends(db_helper.scoped_session_dependency),
+        session: SessionDep,
 ) -> dict:
     schedules = await service.get_next_taking(session=session, user_id=user_id)
     if schedules is not None:
