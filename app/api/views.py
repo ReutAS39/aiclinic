@@ -4,7 +4,7 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 
-from app.db_helper import db_helper, SessionDep
+from app.database import db_helper, SessionDep
 from app.api import service
 from app.api.schemas import CreateScheduleSchema, DayScheduleSchema
 

@@ -7,7 +7,7 @@ from app.models import Base
 from app.api.views import router as api_router
 from app.config import settings
 
-from app.db_helper import db_helper
+from app.database import db_helper
 
 
 @asynccontextmanager
