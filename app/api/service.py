@@ -32,16 +32,19 @@ async def get_schedules_id_by_user_id(session: AsyncSession, user_id: int) -> li
     return schedules_ids
 
 
-async def get_schedule_for_user(session: AsyncSession, user_id: int, schedule_id: int, ) -> dict:
+async def get_schedule_for_user(session: AsyncSession, user_id: int, schedule_id: int, ) -> dict | None:
     query = select(ScheduleModel).where(ScheduleModel.id == schedule_id, ScheduleModel.user_id == user_id)
     result: Result = await session.execute(query)
     schedule = result.scalar_one_or_none()
-    day_schedule = freq(schedule.frequency)
-    json_compatible_schedule_data = jsonable_encoder(schedule)
-    json_compatible_schedule_data['day_schedule'] = day_schedule
+    if schedule is not None:
+        day_schedule = freq(schedule.frequency)
+        json_compatible_schedule_data = jsonable_encoder(schedule)
+        json_compatible_schedule_data['day_schedule'] = day_schedule
 
 
-    return json_compatible_schedule_data
+        return json_compatible_schedule_data
+
+    return schedule
 
 
 async def get_next_taking(session: AsyncSession, user_id: int) -> dict:

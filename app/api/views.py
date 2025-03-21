@@ -13,11 +13,20 @@ from app.api.schemas import CreateScheduleSchema, DayScheduleSchema
 router = APIRouter(tags=['Schedules'])
 
 
-@router.post('/schedule/', summary='Создание расписания')
+@router.post('/schedule', summary='Создание расписания')
 async def create_schedule(
         schedule_in: CreateScheduleSchema,
         session: SessionDep,
 ) -> int:
+    """
+    Create an item with all the information:
+
+    - **doctors_stuff**: Наименование лекарства
+    - **frequency**: Периодичность приёмов
+    - **duration**: Продолжительность лечения
+    - **user_id**: Идентификатор пользователя (у каждого зверя есть медицинский полис, будем считать,
+    что его номер это  и есть идентификатор пользователя)
+    """
     try:
         return await service.create_schedule(session=session, schedule_in=schedule_in)
     except IntegrityError as e:
@@ -25,7 +34,7 @@ async def create_schedule(
 
 
 @router.get(
-    '/schedules/user_id={user_id}',
+    '/schedules',
     summary='Retrieves a list of schedules for the specified user')
 async def get_schedules_id_by_user_id(
         user_id: int,
@@ -41,15 +50,17 @@ async def get_schedules_id_by_user_id(
 
 
 @router.get(
-    '/schedule/user_id={user_id}&schedule_id={schedule_id}',
+    '/schedule',
     summary='Данные о выбранном расписании с рассчитанным графиком приёмов на день')
 async def get_schedule_for_user(
         user_id: int,
         schedule_id: int,
         session: SessionDep,
         # session: AsyncSession = Depends(db_helper.scoped_session_dependency),
-) -> DayScheduleSchema:
+) -> DayScheduleSchema | dict:
     schedule = await service.get_schedule_for_user(session=session, user_id=user_id, schedule_id=schedule_id)
+    if schedule is None:
+        return {'message': f'Расписание с ID {schedule_id} не найденл!'}
     return schedule
 
 

@@ -18,7 +18,7 @@ class DatabaseHelper:
             url=url,
             echo=echo,
         )
-        self.session_factory = async_sessionmaker(
+        self.async_session_maker = async_sessionmaker(
             bind=self.engine,
             autoflush=False,
             autocommit=False,
@@ -27,7 +27,7 @@ class DatabaseHelper:
 
     def get_scoped_session(self):
         session = async_scoped_session(
-            session_factory=self.session_factory,
+            session_factory=self.async_session_maker,
             scopefunc=current_task,
         )
         return session
