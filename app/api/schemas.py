@@ -21,4 +21,5 @@ class ScheduleSchema(ScheduleBase):
 
 
 class DayScheduleSchema(ScheduleSchema):
+    model_config = ConfigDict(from_attributes=True)
     day_schedule: dict

@@ -5,7 +5,7 @@ from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models import ScheduleModel
-from app.utils import freq
+from app.utils import ScheduleManager
 from app.api.schemas import CreateScheduleSchema
 
 
@@ -34,7 +34,7 @@ async def get_schedule_for_user(session: AsyncSession, user_id: int, schedule_id
     result: Result = await session.execute(query)
     schedule = result.scalar_one_or_none()
     if schedule is not None:
-        day_schedule = freq(schedule.frequency)
+        day_schedule = ScheduleManager(schedule.frequency).get_day_schedule()
         json_compatible_schedule_data = jsonable_encoder(schedule)
         json_compatible_schedule_data['day_schedule'] = day_schedule
 
@@ -49,6 +49,6 @@ async def get_next_taking(session: AsyncSession, user_id: int) -> dict:
     result: Result = await session.execute(query)
     schedules = result.scalars().all()
     for schedule in schedules:
-        test[f'{schedule.doctors_stuff}'] = freq(schedule.frequency)
+        test[f'{schedule.doctors_stuff}'] = ScheduleManager(schedule.frequency).get_day_schedule()
 
     return test

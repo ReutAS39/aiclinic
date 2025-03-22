@@ -1,11 +1,9 @@
-
 from fastapi import APIRouter, HTTPException, status
 from sqlalchemy.exc import IntegrityError
 
 from app.database import SessionDep
 from app.api import service
 from app.api.schemas import CreateScheduleSchema, DayScheduleSchema
-
 
 router = APIRouter(tags=['Schedules'])
 
@@ -27,12 +25,15 @@ async def create_schedule(
     try:
         return await service.create_schedule(session=session, schedule_in=schedule_in)
     except IntegrityError as e:
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Ошибка при добавлении расписания.")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Ошибка при добавлении расписания."
+        )
 
 
 @router.get(
     '/schedules',
-    summary='Retrieves a list of schedules for the specified user')
+    summary='Возвращает список идентификаторов существующих расписаний для указанного пользователя')
 async def get_schedules_id_by_user_id(
         user_id: int,
         session: SessionDep,
@@ -48,16 +49,15 @@ async def get_schedules_id_by_user_id(
 
 @router.get(
     '/schedule',
-    summary='Данные о выбранном расписании с рассчитанным графиком приёмов на день')
+    summary='Возвращает данные о выбранном расписании с рассчитанным графиком приёмов на день')
 async def get_schedule_for_user(
         user_id: int,
         schedule_id: int,
         session: SessionDep,
-        # session: AsyncSession = Depends(db_helper.scoped_session_dependency),
 ) -> DayScheduleSchema | dict:
     schedule = await service.get_schedule_for_user(session=session, user_id=user_id, schedule_id=schedule_id)
     if schedule is None:
-        return {'message': f'Расписание с ID {schedule_id} не найденл!'}
+        return {'message': f'Расписание с ID {schedule_id} не найдено!'}
     return schedule
 
 
@@ -70,9 +70,8 @@ async def get_next_takings(
 ) -> dict:
     schedules = await service.get_next_taking(session=session, user_id=user_id)
     if schedules is not None:
-
         return schedules
     raise HTTPException(
         status_code=status.HTTP_404_NOT_FOUND,
         detail=f'schedule for user  not found!'
-)
+    )
