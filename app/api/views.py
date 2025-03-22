@@ -1,14 +1,11 @@
 
-from fastapi import APIRouter, HTTPException, status, Depends
+from fastapi import APIRouter, HTTPException, status
 from sqlalchemy.exc import IntegrityError
-from sqlalchemy.ext.asyncio import AsyncSession
 
-
-from app.database import db_helper, SessionDep
+from app.database import SessionDep
 from app.api import service
 from app.api.schemas import CreateScheduleSchema, DayScheduleSchema
 
-# from app.api.schemas import UserSchema, CreateUserSchema
 
 router = APIRouter(tags=['Schedules'])
 
@@ -79,14 +76,3 @@ async def get_next_takings(
         status_code=status.HTTP_404_NOT_FOUND,
         detail=f'schedule for user  not found!'
 )
-
-
-
-# @router.post('/user/', response_model=User)
-# async def create_user(
-#         user_in: CreateUser,
-#         session: AsyncSession = Depends(db_helper.scoped_session_dependency),
-# ):
-#     return await crud.create_user(session=session, user_in=user_in)
-#
-

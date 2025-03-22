@@ -8,9 +8,6 @@ from app.models import ScheduleModel
 from app.utils import freq
 from app.api.schemas import CreateScheduleSchema
 
-# from app.core.models import UserModel
-# from app.api.schemas import CreateUserSchema
-
 
 async def create_schedule(session: AsyncSession, schedule_in: CreateScheduleSchema) -> int:
     schedule = ScheduleModel(**schedule_in.model_dump())
@@ -41,7 +38,6 @@ async def get_schedule_for_user(session: AsyncSession, user_id: int, schedule_id
         json_compatible_schedule_data = jsonable_encoder(schedule)
         json_compatible_schedule_data['day_schedule'] = day_schedule
 
-
         return json_compatible_schedule_data
 
     return schedule
@@ -55,18 +51,4 @@ async def get_next_taking(session: AsyncSession, user_id: int) -> dict:
     for schedule in schedules:
         test[f'{schedule.doctors_stuff}'] = freq(schedule.frequency)
 
-
     return test
-
-
-
-
-
-
-
-# async def create_user(session: AsyncSession, user_in: CreateUser) -> User | None:
-#     user = User(**user_in.model_dump())
-#     session.add(user)
-#     await session.commit()
-#     # await session.refresh(schedule)
-#     return user
