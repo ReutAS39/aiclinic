@@ -1,36 +1,37 @@
-import datetime as DT
-from .config import UPCOMING_PERIOD
+from datetime import datetime, timedelta
+from app.config import UPCOMING_PERIOD
 
 
-round_to_15 = lambda x: round(x / 15) * 15
+def get_mul_15(x):
+    return round(x / 15) * 15
+
+
+def get_minutes(obj):
+    return obj.time().hour*60 + obj.time().minute
 
 
 class ScheduleManager:
     day_duration = 14
     start_hour = 8
-
-    def __init__(self, frequency: int = None, test=None, upcoming_period: int = UPCOMING_PERIOD):
-        self.frequency = frequency
-        self.upcoming_period = upcoming_period
-        self.test = test
+    now = datetime.now()
 
     @classmethod
     async def get_day_schedule(cls, frequency: int):
-        chunk = cls.day_duration / (frequency - 1)
-        start_time = DT.datetime.strptime(f"{cls.start_hour}:00", "%H:%M")
-        day_schedule = {i: (start_time + DT.timedelta(minutes=round_to_15(t * chunk * 60))).strftime('%H:%M')
-                        for i, t in enumerate(range(frequency), start=1)}
+        start_time = datetime.strptime(f"{cls.start_hour}:00", "%H:%M")
+        if frequency > 1:
+            chunk = cls.day_duration / (frequency - 1)
+            day_schedule = {i: (start_time + timedelta(minutes=get_mul_15(t * chunk * 60))).strftime('%H:%M')
+                            for i, t in enumerate(range(frequency), start=1)}
+            return day_schedule
+        return {"1": (start_time + timedelta(hours=cls.day_duration/2)).strftime('%H:%M')}
 
-        return day_schedule
-
-    def get_next_taking(self):
-        now = DT.datetime.now()
+    @classmethod
+    def get_next_taking(cls, all_schedules: dict, upcoming_period: int = UPCOMING_PERIOD):
+        now = datetime.now()
         next_taking = {}
-
-        for doctors_stuff, sh in self.test.items():
-            for n, t in sh.items():
-                if (DT.datetime.strptime(t, "%H:%M").time().hour - now.time().hour) in (0, self.upcoming_period):
+        for doctors_stuff, periods_dict in all_schedules.items():
+            for _, t in periods_dict.items():
+                if 0 < (get_minutes(datetime.strptime(t, "%H:%M")) - get_minutes(now)) < upcoming_period:
                     next_taking[doctors_stuff] = t
-
+                    break
         return next_taking
-

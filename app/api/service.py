@@ -28,7 +28,7 @@ async def get_schedules_id_by_user_id(session: AsyncSession, user_id: int) -> li
         if schedules:
             return [schedule.id for schedule in schedules]
     except SQLAlchemyError as e:
-        return []
+        raise e
 
 
 async def get_schedule_for_user(session: AsyncSession, user_id: int, schedule_id: int, ) -> dict | None:
@@ -36,24 +36,17 @@ async def get_schedule_for_user(session: AsyncSession, user_id: int, schedule_id
     result: Result = await session.execute(query)
     schedule = result.scalar_one_or_none()
     if schedule is not None:
-        print(schedule)
-        json_compatible_schedule_data = jsonable_encoder(schedule)
-        print(type(json_compatible_schedule_data))
-        day_schedule = await ScheduleManager.get_day_schedule(schedule.frequency) #session execute TODO
-        json_compatible_schedule_data['day_schedule'] = day_schedule
-
-        return json_compatible_schedule_data
-
-    return schedule
+        schedule_dict = jsonable_encoder(schedule)
+        schedule_dict['day_schedule'] = await ScheduleManager.get_day_schedule(schedule.frequency) # session execute TODO
+        return schedule_dict
 
 
 async def get_next_taking(session: AsyncSession, user_id: int) -> dict:
-    test = {}
     query = select(ScheduleModel).filter_by(user_id=user_id)
     result: Result = await session.execute(query)
     schedules = result.scalars().all()
+    all_schedules = {}
     for schedule in schedules:
-        test[f'{schedule.doctors_stuff}'] = await ScheduleManager.get_day_schedule(schedule.frequency)
-    a = ScheduleManager(test=test).get_next_taking()
-
-    return a
+        all_schedules[f'{schedule.doctors_stuff}'] = await ScheduleManager.get_day_schedule(schedule.frequency)
+    next_taking = ScheduleManager.get_next_taking(all_schedules)
+    return next_taking
