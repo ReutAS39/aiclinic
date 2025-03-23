@@ -15,6 +15,7 @@ async def create_schedule(session: AsyncSession, schedule_in: CreateScheduleSche
     try:
         await session.commit()
     except SQLAlchemyError as e:
+        await session.rollback()
         raise e
     return schedule.id
 
@@ -35,7 +36,7 @@ async def get_schedule_for_user(session: AsyncSession, user_id: int, schedule_id
     schedule = result.scalar_one_or_none()
     if schedule is not None:
         json_compatible_schedule_data = jsonable_encoder(schedule)
-        day_schedule = ScheduleManager(schedule.frequency).get_day_schedule()
+        day_schedule = await ScheduleManager.get_day_schedule(schedule.frequency)
         json_compatible_schedule_data['day_schedule'] = day_schedule
 
         return json_compatible_schedule_data
@@ -49,7 +50,7 @@ async def get_next_taking(session: AsyncSession, user_id: int) -> dict:
     result: Result = await session.execute(query)
     schedules = result.scalars().all()
     for schedule in schedules:
-        test[f'{schedule.doctors_stuff}'] = ScheduleManager(schedule.frequency).get_day_schedule()
+        test[f'{schedule.doctors_stuff}'] = await ScheduleManager.get_day_schedule(schedule.frequency)
     a = ScheduleManager(test=test).get_next_taking()
 
     return a

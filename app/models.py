@@ -20,5 +20,5 @@ class ScheduleModel(Base):
     doctors_stuff: Mapped[str] = mapped_column(String, nullable=False)
     frequency: Mapped[str] = mapped_column(Integer, nullable=False)
     duration: Mapped[int] = mapped_column(Integer, nullable=False)
-    user_id: Mapped[int] = mapped_column(Integer, nullable=False)
+    user_id: Mapped[int] = mapped_column(Integer, nullable=False, index=True)
     add_in: Mapped[datetime] = mapped_column(server_default=func.now())

@@ -27,7 +27,7 @@ async def create_schedule(
     except IntegrityError as e:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Ошибка при добавлении расписания."
+            detail=f"Ошибка при добавлении расписания - {e}"
         )
 
 
@@ -57,7 +57,7 @@ async def get_schedule_for_user(
 ) -> DayScheduleSchema | dict:
     schedule = await service.get_schedule_for_user(session=session, user_id=user_id, schedule_id=schedule_id)
     if schedule is None:
-        return {'message': f'Расписание с ID {schedule_id} не найдено!'}
+        return {'message': f'Расписание №{schedule_id} для пользовтеля {user_id} не найдено!'}
     return schedule
 
 

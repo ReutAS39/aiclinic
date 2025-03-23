@@ -14,11 +14,12 @@ class ScheduleManager:
         self.upcoming_period = upcoming_period
         self.test = test
 
-    def get_day_schedule(self):
-        chunk = self.day_duration / (self.frequency - 1)
-        start_time = DT.datetime.strptime(f"{self.start_hour}:00", "%H:%M")
+    @classmethod
+    async def get_day_schedule(cls, frequency: int):
+        chunk = cls.day_duration / (frequency - 1)
+        start_time = DT.datetime.strptime(f"{cls.start_hour}:00", "%H:%M")
         day_schedule = {i: (start_time + DT.timedelta(minutes=round_to_15(round(t * chunk * 60)))).strftime('%H:%M')
-                        for i, t in enumerate(range(self.frequency), start=1)}
+                        for i, t in enumerate(range(frequency), start=1)}
 
         return day_schedule
 
@@ -32,3 +33,4 @@ class ScheduleManager:
                     next_taking[doctors_stuff] = t
 
         return next_taking
+
