@@ -1,5 +1,3 @@
-import datetime
-
 from fastapi.encoders import jsonable_encoder
 from sqlalchemy import select
 from sqlalchemy.engine import Result
@@ -46,17 +44,12 @@ async def get_schedule_for_user(session: AsyncSession, user_id: int, schedule_id
 
 
 async def get_next_taking(session: AsyncSession, user_id: int) -> dict:
-    now = datetime.datetime.now()
     test = {}
     query = select(ScheduleModel).filter_by(user_id=user_id)
     result: Result = await session.execute(query)
     schedules = result.scalars().all()
     for schedule in schedules:
-        # print(schedule.doctors_stuff, now.time())
         test[f'{schedule.doctors_stuff}'] = ScheduleManager(schedule.frequency).get_day_schedule()
-    a = ScheduleManager(frequency=schedule.frequency, test=test).get_next_taking()
-    print(a)
-
-
+    a = ScheduleManager(test=test).get_next_taking()
 
     return a
