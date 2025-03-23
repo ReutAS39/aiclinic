@@ -1,5 +1,5 @@
 from datetime import datetime, timedelta
-from app.config import UPCOMING_PERIOD
+from app.config import settings
 
 
 def get_mul_15(x):
@@ -16,7 +16,7 @@ class ScheduleManager:
     now = datetime.now()
 
     @classmethod
-    async def get_day_schedule(cls, frequency: int):
+    def get_day_schedule(cls, frequency: int):
         start_time = datetime.strptime(f"{cls.start_hour}:00", "%H:%M")
         if frequency > 1:
             chunk = cls.day_duration / (frequency - 1)
@@ -26,12 +26,12 @@ class ScheduleManager:
         return {"1": (start_time + timedelta(hours=cls.day_duration/2)).strftime('%H:%M')}
 
     @classmethod
-    def get_next_taking(cls, all_schedules: dict, upcoming_period: int = UPCOMING_PERIOD):
+    def get_next_takings(cls, all_schedules: dict, upcoming_period: int = settings.UPCOMING_PERIOD):
         now = datetime.now()
-        next_taking = {}
+        next_takings = {}
         for doctors_stuff, periods_dict in all_schedules.items():
             for _, t in periods_dict.items():
                 if 0 < (get_minutes(datetime.strptime(t, "%H:%M")) - get_minutes(now)) < upcoming_period:
-                    next_taking[doctors_stuff] = t
+                    next_takings[doctors_stuff] = t
                     break
-        return next_taking
+        return next_takings

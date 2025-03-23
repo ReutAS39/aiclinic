@@ -18,7 +18,7 @@ async def create_schedule(
 
     - **doctors_stuff**: Наименование лекарства
     - **frequency**: Периодичность приёмов за день, количество раз
-    - **duration**: Продолжительность лечения, дней (если 0 - то постоянная)
+    - **duration**: Продолжительность лечения, дней (при 0 неограниченная)
     - **user_id**: Идентификатор пользователя (у каждого зверя есть медицинский полис, будем считать,
     что его номер это  и есть идентификатор пользователя)
     """
@@ -34,31 +34,34 @@ async def create_schedule(
 @router.get(
     '/schedules',
     summary='Возвращает список идентификаторов существующих расписаний для указанного пользователя')
-async def get_schedules_id_by_user_id(
+async def get_schedules_ids(
         user_id: int,
         session: SessionDep,
 ) -> list[int]:
-    schedules = await service.get_schedules_id_by_user_id(session=session, user_id=user_id)
+    schedules = await service.get_schedules_ids(session=session, user_id=user_id)
     if schedules:
         return schedules
     raise HTTPException(
         status_code=status.HTTP_404_NOT_FOUND,
-        detail=f'schedules for user {user_id}  not found!'
+        detail=f'Расписаний для пользовтеля {user_id} не найдено!'
     )
 
 
 @router.get(
     '/schedule',
     summary='Возвращает данные о выбранном расписании с рассчитанным графиком приёмов на день')
-async def get_schedule_for_user(
+async def get_ext_schedule(
         user_id: int,
         schedule_id: int,
         session: SessionDep,
 ) -> DayScheduleSchema | dict:
-    schedule = await service.get_schedule_for_user(session=session, user_id=user_id, schedule_id=schedule_id)
-    if schedule is None:
-        return {'message': f'Расписание №{schedule_id} для пользовтеля {user_id} не найдено!'}
-    return schedule
+    schedule = await service.get_ext_schedule(session=session, user_id=user_id, schedule_id=schedule_id)
+    if schedule is not None:
+        return schedule
+    raise HTTPException(
+        status_code=status.HTTP_404_NOT_FOUND,
+        detail=f'Расписание {schedule_id} для пользовтеля {user_id} не найдено!'
+    )
 
 
 @router.get(
@@ -68,10 +71,10 @@ async def get_next_takings(
         user_id: int,
         session: SessionDep,
 ) -> dict:
-    schedules = await service.get_next_taking(session=session, user_id=user_id)
+    schedules = await service.get_next_takings(session=session, user_id=user_id)
     if schedules is not None:
         return schedules
     raise HTTPException(
         status_code=status.HTTP_404_NOT_FOUND,
-        detail=f'schedule for user  not found!'
+        detail=f'Расписаний не найдено!'
     )
