@@ -21,13 +21,14 @@ async def create_schedule(session: AsyncSession, schedule_in: CreateScheduleSche
 
 
 async def get_schedules_id_by_user_id(session: AsyncSession, user_id: int) -> list[int]:
-    schedules_ids = []
-    query = select(ScheduleModel).filter_by(user_id=user_id)
-    result: Result = await session.execute(query)
-    schedules = result.scalars().all()
-    for schedule in schedules:
-        schedules_ids.append(schedule.id)
-    return schedules_ids
+    try:
+        query = select(ScheduleModel).filter_by(user_id=user_id)
+        result: Result = await session.execute(query)
+        schedules = result.scalars().all()
+        if schedules:
+            return [schedule.id for schedule in schedules]
+    except SQLAlchemyError as e:
+        return []
 
 
 async def get_schedule_for_user(session: AsyncSession, user_id: int, schedule_id: int, ) -> dict | None:
@@ -35,8 +36,10 @@ async def get_schedule_for_user(session: AsyncSession, user_id: int, schedule_id
     result: Result = await session.execute(query)
     schedule = result.scalar_one_or_none()
     if schedule is not None:
+        print(schedule)
         json_compatible_schedule_data = jsonable_encoder(schedule)
-        day_schedule = await ScheduleManager.get_day_schedule(schedule.frequency)
+        print(type(json_compatible_schedule_data))
+        day_schedule = await ScheduleManager.get_day_schedule(schedule.frequency) #session execute TODO
         json_compatible_schedule_data['day_schedule'] = day_schedule
 
         return json_compatible_schedule_data

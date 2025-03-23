@@ -39,7 +39,7 @@ async def get_schedules_id_by_user_id(
         session: SessionDep,
 ) -> list[int]:
     schedules = await service.get_schedules_id_by_user_id(session=session, user_id=user_id)
-    if len(schedules):
+    if schedules:
         return schedules
     raise HTTPException(
         status_code=status.HTTP_404_NOT_FOUND,

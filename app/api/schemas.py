@@ -4,22 +4,20 @@ from pydantic import BaseModel, ConfigDict, Field
 
 
 class ScheduleBase(BaseModel):
-    doctors_stuff: str = Field(max_length=20)
+    model_config = ConfigDict(from_attributes=True)
+    doctors_stuff: str = Field(max_length=20, description="Наименование препарата")
     frequency: int = Field(ge=1, le=24)
     duration: int = Field(ge=0)
     user_id: int = Field(ge=0)
 
 
-class CreateScheduleSchema(ScheduleBase):
-    pass
-
-
 class ScheduleSchema(ScheduleBase):
-    model_config = ConfigDict(from_attributes=True)
     id: int
     add_in: datetime
 
 
+class CreateScheduleSchema(ScheduleBase):
+    pass
+
 class DayScheduleSchema(ScheduleSchema):
-    model_config = ConfigDict(from_attributes=True)
     day_schedule: dict

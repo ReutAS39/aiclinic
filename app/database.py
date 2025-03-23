@@ -26,6 +26,7 @@ async_session_maker = async_sessionmaker(
 async def session_getter() -> AsyncGenerator[AsyncSession, None]:
     async with async_session_maker() as session:
         yield session
+        await session.close()
 
 # class DatabaseHelper:
 #     def __init__(self, url: str, echo: bool = False):

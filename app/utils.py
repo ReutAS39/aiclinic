@@ -18,7 +18,7 @@ class ScheduleManager:
     async def get_day_schedule(cls, frequency: int):
         chunk = cls.day_duration / (frequency - 1)
         start_time = DT.datetime.strptime(f"{cls.start_hour}:00", "%H:%M")
-        day_schedule = {i: (start_time + DT.timedelta(minutes=round_to_15(round(t * chunk * 60)))).strftime('%H:%M')
+        day_schedule = {i: (start_time + DT.timedelta(minutes=round_to_15(t * chunk * 60))).strftime('%H:%M')
                         for i, t in enumerate(range(frequency), start=1)}
 
         return day_schedule
