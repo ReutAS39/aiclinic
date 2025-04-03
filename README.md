@@ -98,4 +98,8 @@ GET /next_takings?user_id=
    ```
 
 
-5. Запуск приложения - uvicorn app.main:app
+5. Запуск приложения: 
+
+  ```bash
+  uvicorn app.main:app
+   ```
